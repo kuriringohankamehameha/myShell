@@ -1,4 +1,6 @@
-#include "shell.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <ncurses.h>
 
 #define gotoxy(x, y) printf("\033[%d;%dH", (y), (x))
