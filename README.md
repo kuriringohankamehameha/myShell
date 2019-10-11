@@ -67,6 +67,9 @@ daemonize bash script.sh
 * Add some more builtin commands.
 * Have implemented a basic AutoComplete Engine using Tries. Incorporate it into the Shell, possibly with the help of the `ncurses` library.
 
+To compile and test the simple program with `ncurses`, compile with the `-lncurses` flag in `gcc`.
+Compile : `gcc -o engine engine.c -lncurses`
+
 ## Bugs
 * Suspend signal does not work as intended, if the background job waits for `tty` as input.
 * `&` does not allow support with pipes and redirection at present.
