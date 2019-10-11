@@ -67,12 +67,16 @@ daemonize bash script.sh
 * Add some more builtin commands.
 * Have implemented a basic AutoComplete Engine using Tries. Incorporate it into the Shell, possibly with the help of the `ncurses` library.
 
+## Autocomplete Engine
+
 To compile and test the simple program with `ncurses`, compile with the `-lncurses` flag in `gcc`.
 
 * Compile using : 
 ```bash
 gcc -o engine engine.c -lncurses
 ```
+
+The program tries to simulate an autocompletion from a list of words stored in memory. Similar to `zsh`'s tabbed completion, this tries to replicate some of it's features using `ncurses` library for positioning of the cursor.
 
 ## Bugs
 * Suspend signal does not work as intended, if the background job waits for `tty` as input.
