@@ -194,6 +194,7 @@ void printList(Job* head)
 
 Job* changeStatus(Job* head, int pid, Status status)
 {
+    // Change the status of a Job
     Job* temp = head;
     while (temp)
     {
@@ -285,6 +286,7 @@ void freeTripleGlobalCharPtr(char**** ptr, int num_arrays1, int num_arrays2)
 
 void replaceSubstring(char* str)
 {
+    // For replacing $HOME with ~
     char* ptr = strstr(str, HOME);
     if (ptr)
     {
@@ -589,6 +591,7 @@ int getPIDfromname(Job* jobSet, char* name)
 
 FILE* popen_read()
 {
+    // Emulates popen("cmd", "r")
     int fd[2];
     int read_fd, write_fd;
     int pid;               
@@ -620,6 +623,7 @@ FILE* popen_read()
 
 FILE* popen_write(char ***cmd)
 {
+    // Emulates popen("cmd", "w")
     int fd[2];
     int read_fd, write_fd;
     int pid;               
@@ -652,6 +656,7 @@ FILE* popen_write(char ***cmd)
 
 void executePipe(char ***cmd)
 {
+    // Execute a chain of Pipe | commands along with input/output redirection operators
     int p[2];
     int pid;
     int fd_in = 0;
@@ -815,6 +820,7 @@ void executePipe(char ***cmd)
 
 void execRedirect(int redirection)
 {
+    // Performs the redirection into a file
     int fd = -1;
     int count1 = 0;
     int count2 = 0;
@@ -1191,6 +1197,7 @@ void exec_fg()
 
 void exec_bg()
 {
+    // Gets the pid of the background job and sends it to shellbgcommand for execution
     int pid = -1;
 
     if (jobSet)
@@ -1230,6 +1237,7 @@ void exec_bg()
 
 void count_pipes()
 {
+    // Counts the number of pipes in the chain
     int counter = 0;
     for (int i=0; argVector[i]!=NULL; i++)
     {
@@ -1355,6 +1363,7 @@ void output_redirection(int a)
 
 bool redirection_with_pipes_and_ipc()
 {
+    // Performs any redirection after a sequence of pipes
     for (int i=0; argVector[i]!=NULL; i++)
     {
         if (strcmp(argVector[i], ">") == 0 || strcmp(argVector[i], ">>") == 0)
@@ -1566,6 +1575,7 @@ void insert_background_job(pid_t pid)
 
 void job_wait(pid_t pid)
 {
+    // Waits for a job
     int status;
     waitpid(pid, &status, WUNTRACED);
     if (WSTOPSIG(status)) {
@@ -1902,8 +1912,6 @@ int main(int argc, char* argv[])
                 noinit_cmd = false;
                 lastPipe = 0;
                 ignorePATH = false;
-                tcsetpgrp(0, getpid());
-                tcsetpgrp(1, getpid());
 				printPrompt();
 			}
 		}
