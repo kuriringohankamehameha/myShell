@@ -144,6 +144,7 @@ Job * removeJob(Job * head, int pid) {
     if (pid < 0 || temp -> node.pid == pid) {
         head = temp -> next;
         temp -> next = NULL;
+        free(temp -> node.name);
         free(temp);
         return head;
     } else {
@@ -153,6 +154,7 @@ Job * removeJob(Job * head, int pid) {
                 Job * del = temp -> next;
                 temp -> next = del -> next;
                 del -> next = NULL;
+                free(del -> node.name);
                 free(del);
             } else
                 temp = temp -> next;
@@ -513,7 +515,7 @@ uint32_t getArgumentLength(char * command) {
 
 void freeArgVector() {
     if (!ignorePATH)
-        for (int i = 0; i <= argLength; i++)
+        for (int i = 0; i < argLength; i++)
             free(argVector[i]);
     free(argVector);
 }
@@ -1561,7 +1563,7 @@ int main(int argc, char * argv[]) {
         // Get the argument length
         argLength = getArgumentLength(buffer);
         argVector = (char ** ) malloc((argLength + 1) * sizeof(char * ));
-        for (int i = 0; i <= argLength; i++)
+        for (int i = 0; i < argLength; i++)
             argVector[i] = (char * ) malloc(sizeof(char));
 
         redirection_in_pipe = 0;
