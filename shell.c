@@ -242,7 +242,7 @@ void destroyGlobals() {
 char ** initDoubleGlobalCharPtr(int num_arrays) {
     char ** ptr = (char ** ) calloc(num_arrays, sizeof(char * ));
     for (int i = 0; i < num_arrays; i++)
-        ptr[i] = (char * ) malloc(sizeof(char));
+        ptr[i] = (char * ) malloc(50 * sizeof(char));
     return ptr;
 }
 
@@ -258,7 +258,7 @@ char ** * initTripleGlobalCharPtr(int num_arrays1, int num_arrays2) {
     for (int i = 0; i < num_arrays1; i++) {
         ptr[i] = (char ** ) calloc(num_arrays2, sizeof(char * ));
         for (int j = 0; j < num_arrays2; j++)
-            ptr[i][j] = (char * ) malloc(sizeof(char));
+            ptr[i][j] = (char * ) malloc(50 * sizeof(char));
     }
     return ptr;
 }
@@ -312,7 +312,7 @@ void printPrompt() {
 char * str_concat(char * s1, char * s2) {
     int l1 = strlen(s1);
     int l2 = strlen(s2);
-    char * op = (char * ) calloc(l1 + l2, sizeof(char));
+    char * op = (char * ) calloc(l1 + l2 + 1, sizeof(char));
     for (int i = 0; i < l1 + l2; i++)
         if (i < l1)
             op[i] = s1[i];
@@ -894,7 +894,7 @@ void shellShm(char ** * outputs) {
     char * str = (char * ) shmat(shmid, (void * ) 0, 0);
     for (int i = 0; outputs[i] != NULL; i++) {
         if (fork() == 0) {
-            char * output_cmd = (char * ) malloc(sizeof(char));
+            char * output_cmd = (char * ) malloc(100 * sizeof(char));
             for (int j = 0; outputs[i][j] != NULL; j++) {
                 if (j == 0)
                     strcpy(output_cmd, outputs[i][j]);
@@ -988,7 +988,6 @@ char * lineget(char * buffer) {
         c = fgetc(stdin);
         if (c == EOF) {
             // Must return NULL, and not an empty string
-            // Credits : u/arsv on Reddit
             free(buffer);
             return NULL;
         }
@@ -1046,7 +1045,7 @@ void exec_fg() {
     if (jobSet) {
         if (argVector[1][0] == '%' && argVector[1][1] != '\0') {
             // Search by name
-            char * name = (char * ) malloc(sizeof(char));
+            char * name = (char * ) malloc(100 * sizeof(char));
 
             int i;
             for (i = 1; argVector[1][i] != '\0'; i++)
@@ -1081,7 +1080,7 @@ void exec_bg() {
     if (jobSet) {
         if (argVector[1][0] == '%' && argVector[1][2] != '\0') {
             // Search by name
-            char * name = (char * ) malloc(sizeof(char));
+            char * name = (char * ) malloc(100 * sizeof(char));
 
             int i;
             for (i = 1; argVector[1][i] != '\0'; i++)
@@ -1199,7 +1198,7 @@ void output_redirection(int a) {
     for (int b = 0; b < 20; b++)
         free(commands[pipeCount + 1][b]);
     free(commands[pipeCount + 1]);
-    commands[pipeCount + 1][a] = 0;
+    //commands[pipeCount + 1][a] = 0;
     commands[pipeCount + 1] = 0;
 
     if (pipeargCount >= 2 && (strcmp(argVector[pipeargCount - 2], ">") == 0 || strcmp(argVector[pipeargCount - 2], ">>") == 0)) {
@@ -1224,8 +1223,8 @@ bool redirection_with_pipes_and_ipc() {
             redirectcmd1 = (char ** ) calloc(50, sizeof(char * ));
             redirectcmd2 = (char ** ) calloc(50, sizeof(char * ));
             for (int i = 0; i < 5; i++) {
-                redirectcmd1[i] = (char * ) malloc(sizeof(char));
-                redirectcmd2[i] = (char * ) malloc(sizeof(char));
+                redirectcmd1[i] = (char * ) malloc(50 * sizeof(char));
+                redirectcmd2[i] = (char * ) malloc(50 * sizeof(char));
             }
             if (i <= lastPipe) {
                 printf("myShell: Output Redirection before a pipe\n");
@@ -1263,8 +1262,8 @@ bool redirection_with_pipes_and_ipc() {
             redirectcmd1 = (char ** ) calloc(50, sizeof(char * ));
             redirectcmd2 = (char ** ) calloc(50, sizeof(char * ));
             for (int i = 0; i < 5; i++) {
-                redirectcmd1[i] = (char * ) malloc(sizeof(char));
-                redirectcmd2[i] = (char * ) malloc(sizeof(char));
+                redirectcmd1[i] = (char * ) malloc(50 * sizeof(char));
+                redirectcmd2[i] = (char * ) malloc(50 * sizeof(char));
             }
             for (int j = 0; j < i; j++)
                 strcpy(redirectcmd1[j], argVector[j]);
@@ -1287,7 +1286,7 @@ bool redirection_with_pipes_and_ipc() {
         // As of now, there's no support for Msg Queues with Pipes / Redirection
         else if (strcmp(argVector[i], "##") == 0) {
             msgOutputs = initTripleGlobalCharPtr(20, 5);
-            int * array = (int * ) malloc(sizeof(int));
+            int * array = (int * ) malloc(50 * sizeof(int));
             command = initDoubleGlobalCharPtr(i + 1);
             for (int j = 0; j < i; j++)
                 strcpy(command[j], argVector[j]);
@@ -1332,7 +1331,7 @@ bool redirection_with_pipes_and_ipc() {
             return true;
         } else if (strcmp(argVector[i], "SS") == 0) {
             shmOutputs = initTripleGlobalCharPtr(20, 5);
-            int * array = (int * ) malloc(sizeof(int));
+            int * array = (int * ) malloc(50 * sizeof(int));
             command = initDoubleGlobalCharPtr(i + 1);
             for (int j = 0; j < i; j++)
                 strcpy(command[j], argVector[j]);
@@ -1386,7 +1385,7 @@ void insert_background_job(pid_t pid) {
     node.pid = pid;
     node.status = STATUS_BACKGROUND;
     node.gid = pid;
-    node.name = (char * ) malloc(sizeof(char));
+    node.name = (char * ) malloc(100 * sizeof(char));
     strcpy(node.name, argVector[0]);
     jobSet = insert(jobSet, node);
 
@@ -1406,7 +1405,7 @@ void job_wait(pid_t pid) {
     waitpid(pid, & status, WUNTRACED);
     if (WSTOPSIG(status)) {
         setpgid(pid, pid);
-        char * name = (char * ) malloc(sizeof(char));
+        char * name = (char * ) malloc(100 * sizeof(char));
         strcpy(name, argVector[0]);
         Node node = {
             pid,
@@ -1534,7 +1533,7 @@ int main(int argc, char * argv[]) {
         0
     };
     sa.sa_sigaction = shellHandler;
-    sa.sa_flags = SA_SIGINFO;
+    sa.sa_flags = SA_SIGINFO | SA_RESTART;
 
     int signalArray[] = {
         SIGINT,
@@ -1568,7 +1567,7 @@ int main(int argc, char * argv[]) {
         argLength = getArgumentLength(buffer);
         argVector = (char ** ) malloc((argLength + 1) * sizeof(char * ));
         for (int i = 0; i < argLength; i++)
-            argVector[i] = (char * ) malloc(sizeof(char));
+            argVector[i] = (char * ) malloc(100 * sizeof(char));
 
         redirection_in_pipe = 0;
         redirection_out_pipe = 0;
