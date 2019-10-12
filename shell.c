@@ -986,8 +986,12 @@ char * lineget(char * buffer) {
 
     for (;;) {
         c = fgetc(stdin);
-        if (c == EOF)
-            break;
+        if (c == EOF) {
+            // Must return NULL, and not an empty string
+            // Credits : u/arsv on Reddit
+            free(buffer);
+            return NULL;
+        }
 
         if (--len == 0) {
             len = lenmax;
@@ -1712,5 +1716,10 @@ int main(int argc, char * argv[]) {
             }
         }
     }
+    // In case we get an EOF input, free stuff and exit
+    destroyGlobals();
+    free(jobSet);
+    free(buffer);
+    free(HOST);
     return 0;
 }
